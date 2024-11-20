@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plastic Detection</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #6dd5fa, #2980b9);
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        .background-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.1);
+            z-index: -1;
+            white-space: nowrap;
+        }
+
+        .container {
+            max-width: 90%;
+            width: 500px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            color: #333;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            width: 100px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #2980b9;
+        }
+
+        .caption {
+            font-size: 1rem;
+            margin-bottom: 20px;
+            color: #555;
+            font-style: italic;
+        }
+
+        form {
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2980b9;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        input[type="file"]:hover {
+            border-color: #2980b9;
+            background-color: #f0f8ff;
+        }
+
+        button {
+            background: #2980b9;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background: #1e6b96;
+            transform: translateY(-3px);
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2980b9;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .caption {
+                font-size: 0.9rem;
+            }
+
+            button {
+                font-size: 0.9rem;
+                padding: 10px;
+            }
+
+            input[type="file"] {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+
+            .background-text {
+                font-size: 4rem;
+            }
+
+            .logo {
+                width: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .caption {
+                font-size: 0.8rem;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            button {
+                font-size: 0.8rem;
+            }
+
+            .background-text {
+                font-size: 3rem;
+            }
+
+            .logo {
+                width: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-text">Made with ❤️‍🔥</div>
+    <div class="container">
+        <!-- Logo Image -->
+        <img src="https://i.ibb.co/TM36V7V/images-removebg-preview.png" alt="Plastic Detection Logo" class="logo">
+        <h1>Plastic Detection</h1>
+        <p class="caption">Empowering sustainability through AI-driven plastic detection.</p>
+        <form id="uploadForm">
+            <label for="imageInput">Capture or Upload an Image:</label>
+            <input type="file" id="imageInput" name="image" accept="image/*" capture="environment" required>
+            <br><br>
+            <button type="submit">Predict</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+
+    <footer>
+        <p>Built with 💡 and 🌍 in mind. <a href="#">Learn more</a></p>
+    </footer>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            const imageInput = document.getElementById('imageInput');
+            if (imageInput.files.length === 0) {
+                alert('Please select or capture an image!');
+                return;
+            }
+            formData.append('image', imageInput.files[0]);
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                if (data.error) {
+                    resultDiv.innerText = 'Error: ' + data.error;
+                } else {
+                    resultDiv.innerText = 'Prediction: ' + data.prediction;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
