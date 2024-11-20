@@ -11,3 +11,4 @@ gunicorn
 opencv-python==4.10.0.84
 Flask-SocketIO==5.4.1
 tensorflow==2.18.0
+gevent==24.11.1
