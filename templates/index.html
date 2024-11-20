@@ -103,6 +103,12 @@
             transform: translateY(-3px);
         }
 
+        .loading {
+            display: none;
+            font-size: 1.2rem;
+            color: #2980b9;
+        }
+
         .result {
             margin-top: 20px;
             font-size: 1.2rem;
@@ -189,6 +195,7 @@
             <input type="file" id="imageInput" name="image" accept="image/*" capture="environment" required>
             <br><br>
             <button type="submit">Predict</button>
+            <div class="loading" id="loading">Loading...</div>
         </form>
         <div class="result" id="result"></div>
     </div>
@@ -202,11 +209,16 @@
             event.preventDefault();
             const formData = new FormData();
             const imageInput = document.getElementById('imageInput');
+            const loading = document.getElementById('loading');
+            const resultDiv = document.getElementById('result');
             if (imageInput.files.length === 0) {
                 alert('Please select or capture an image!');
                 return;
             }
             formData.append('image', imageInput.files[0]);
+
+            // Show loading indicator
+            loading.style.display = 'block';
 
             fetch('/predict', {
                 method: 'POST',
@@ -214,7 +226,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                const resultDiv = document.getElementById('result');
+                loading.style.display = 'none'; // Hide loading indicator
                 if (data.error) {
                     resultDiv.innerText = 'Error: ' + data.error;
                 } else {
@@ -222,6 +234,7 @@
                 }
             })
             .catch(error => {
+                loading.style.display = 'none'; // Hide loading indicator
                 console.error('Error:', error);
             });
         });
