@@ -8,10 +8,10 @@ import cv2
 
 app = Flask(__name__)
 
-# Set up model
+# Load the model once when the app starts (avoiding reloading on every request)
 model = tf.keras.models.load_model('improved_plastic_classifier.h5')
 
-# Set the upload folder
+# Set up upload folder and allowed extensions
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -66,4 +66,5 @@ def predict():
     return jsonify({'error': 'Invalid file type. Only .jpg, .jpeg, and .png are allowed.'}), 400
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Run with Gunicorn for better production performance
+    app.run(debug=True, threaded=True)
